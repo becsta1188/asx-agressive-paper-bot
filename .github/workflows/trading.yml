@@ -16,6 +16,7 @@ jobs:
   trade:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
     steps:
       - name: Download repository
         uses: actions/checkout@v4
@@ -37,7 +38,14 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          if [ ! -f aggressive_trades.sqlite3 ]; then
+            echo "No trading database yet - nothing to save."
+            exit 0
+          fi
+
           git add aggressive_trades.sqlite3
+
           if ! git diff --cached --quiet; then
             git commit -m 'Save aggressive ASX paper trading state'
             git push
